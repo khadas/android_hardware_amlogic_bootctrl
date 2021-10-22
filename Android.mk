@@ -152,11 +152,17 @@ LOCAL_LDFLAGS := $(avb_common_ldflags)
 LOCAL_SHARED_LIBRARIES := libbase libcutils liblog
 LOCAL_STATIC_LIBRARIES := libfs_mgr libavb_amlogic libfstab
 
+ifeq ($(ANDROID_BUILD_TYPE), 64)
+LOCAL_POST_INSTALL_CMD := \
+  $(hide) mkdir -p $(PRODUCT_OUT)/product/lib64/hw && \
+  mkdir -p $(PRODUCT_OUT)/vendor/lib64/hw && \
+  cp $(PRODUCT_OUT)/product/lib64/hw/bootctrl.amlogic.so $(PRODUCT_OUT)/vendor/lib64/hw/bootctrl.default.so
+else
 LOCAL_POST_INSTALL_CMD := \
   $(hide) mkdir -p $(PRODUCT_OUT)/product/lib/hw && \
   mkdir -p $(PRODUCT_OUT)/vendor/lib/hw && \
   cp $(PRODUCT_OUT)/product/lib/hw/bootctrl.amlogic.so $(PRODUCT_OUT)/vendor/lib/hw/bootctrl.default.so
-
+endif
 
 ifeq (($(shell test $(PLATFORM_SDK_VERSION) -ge 26 ) && ($(shell test $(PLATFORM_SDK_VERSION) -lt 28)  && echo OK),OK)
 LOCAL_PROPRIETARY_MODULE := true
